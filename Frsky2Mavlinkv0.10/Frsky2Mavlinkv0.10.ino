@@ -12,7 +12,7 @@ to Mavlink and sends it out again on Bluetooth.
 
 
  Changelog:
- 2019-09-02 Adapt for mavlink 2 libraries
+ 2019-09-02 v0.10 Adapt for latest Mavlink 2 libraries
  */
 
   
