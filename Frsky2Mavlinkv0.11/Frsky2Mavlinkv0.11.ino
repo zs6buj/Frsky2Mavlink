@@ -1,4 +1,4 @@
-  
+     
 /*
 
     ZS6BUJ's Frsky to Mavlink
@@ -21,7 +21,14 @@ to Mavlink and sends it out again on Bluetooth.
 #include <common/mavlink.h>
 #include <ardupilotmega/ardupilotmega.h>
 
-
+boolean FT = true;
+int iLth=0;
+int pLth;
+byte chr = 0x00;
+const int packetSize = 70; 
+byte pBuff[packetSize]; 
+short crc=0;  
+boolean crc_bad; 
 
 //************* Pin Assignments
 // Serial1 Frsky telemetry in     RX = A3   (TX = A2 not used)
@@ -29,7 +36,7 @@ to Mavlink and sends it out again on Bluetooth.
 // Serial2 for Mav BT out         RX = B11   TX = B10
 
 int StatusLed = 6;  
-int BoardLed = PC13;
+int FrsStatusLed = PC13;
 int ledState = LOW; 
 unsigned long ledMillis = 0;
 
@@ -211,7 +218,6 @@ char st_text[50];
 //***************************************************
 void setup()
 {
-  SetupBluetooth();           // HC-06 module called zs6buj on Mav out serial2
   
   Serial1.begin(57600);       // Frsky Telemetry input      - TX2 & RX2, Pins A2  & A3
   Serial2.begin(57600);       // Mavlink Telemetry output   - TX3 & RX3, Pins B10 & B11
@@ -219,8 +225,8 @@ void setup()
   
   delay(500);
   pinMode(StatusLed , OUTPUT ); 
-  pinMode(BoardLed, OUTPUT);     // Board LED mimics status led
-  digitalWrite(BoardLed, HIGH);  // Logic is reversed! Initialse off
+  pinMode(FrsStatusLed, OUTPUT);     // Board LED mimics status led
+  digitalWrite(FrsStatusLed, HIGH);  // Logic is reversed! Initialse off
 
   // Initialise the Mavlink header
   system_id = 20;                           // ID 20 for this aircraft
@@ -458,10 +464,10 @@ void DecodeFrSky() {
     pBuff[2]=chr;
     boolean goodPacket=ParseFrsky();
     if (goodPacket) ProcessFrsky();
-    DisplayTheBuffer(10); 
+  //  DisplayTheBuffer(10); 
     chr=NextChar();   //  Should be the next Start-Stop  
     }
-  else DisplayTheBuffer(2); 
+ // else DisplayTheBuffer(2); 
  
   if (!(chr==0x7E)) FT=true;  //  If next char is not start-stop then the frame sync has been lost. Resync 
 }
@@ -498,15 +504,7 @@ void DecodeMavlink() {
     // And get the next one
   }
 }
-//***************************************************
-void SetupBluetooth() {
-  // Using HC-06 bluetooth model front-end - Default pin = 1234
-  Serial2.begin(9600);               //  HC-06 bluetooth module default speed
-  delay(200); 
-  Serial2.print("AT+NAMEzs6buj");    //  Optional - Configure your HC-06 bluetooth name
-  Serial2.print("AT+BAUD7");         // Set the HC-06 speed to Mavlink default speed 57600 bps
-  delay(3000);                       // Wait for HC-06 reboot
-}
+
 //***************************************************
 void Add_Crc (uint8_t byte) {
   crc += byte;       //0-1FF
@@ -869,7 +867,7 @@ void ServiceTheStatusLed() {
      else
        ledState = LOW;
     digitalWrite(StatusLed, ledState);  
-    digitalWrite(BoardLed, !ledState);
+    digitalWrite(FrsStatusLed, !ledState);
  */   
 }
 
