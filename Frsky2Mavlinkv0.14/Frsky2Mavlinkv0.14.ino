@@ -16,6 +16,7 @@ to Mavlink and sends it out again on Serial, Wifi and/or Bluetooth
  2020-04-08 v0.12 Serious bug uncovered by maciek252. ^ is in not the (raise to a power) operator in CPP, obviously. :(
  2020-04-12 v0.13 Experimental ALPHA code. Please report and help me fix bugs. Thanks. 
                   Remember, Passthrough is presently uni-directional - you can't ask for paramters from the GCS.
+ 2020-0601  v0.14 Accommodate Mavlink library updates                 
  */
 
 #include <cstring>
