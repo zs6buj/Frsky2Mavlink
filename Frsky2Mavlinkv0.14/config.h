@@ -52,10 +52,10 @@ v0.13 Supports WiFi and Bluetooth. ALPHA software, likely to be buggy. Feedback 
 //                          S E L E C T   E S P   B O A R D   V A R I A N T   
 //=================================================================================================
 
-//#define ESP32_Variant     1    //  ESP32 Dev Module - Use Partition Scheme: "Minimal SPIFFS(1.9MB APP...)"
+#define ESP32_Variant     1    //  ESP32 Dev Module - Use Partition Scheme: "Minimal SPIFFS(1.9MB APP...)"
 //#define ESP32_Variant     2    //  Wemos® LOLIN ESP32-WROOM-32_OLED_Dual_26p
 //#define ESP32_Variant     3    //  Dragonlink V3 slim with internal ESP32 - contributed by Noircogi
-#define ESP32_Variant     4    //  Heltec Wifi Kit 32 - Use Partition Scheme: "Minimal SPIFFS(Large APPS ith OTA)" - contributed by Noircogi
+//#define ESP32_Variant     4    //  Heltec Wifi Kit 32 - Use Partition Scheme: "Minimal SPIFFS(Large APPS ith OTA)" - contributed by Noircogi
 
 #define ESP8266_Variant   1   // NodeMCU ESP 12F - choose "NodeMCU 1.0(ESP-12E)" board in the IDE
 //#define ESP8266_Variant   2   // ESP-12E, ESP-F barebones boards. RFD900X TX-MOD, QLRS et al - use Generic ESP8266 on IDE
@@ -79,7 +79,7 @@ v0.13 Supports WiFi and Bluetooth. ALPHA software, likely to be buggy. Feedback 
 #define APpw                 "password"             // Change me!
 #define APchannel            9                      // The wifi channel to use for our AP
 #define STAssid              "OmegaOffice"          // Target AP to connect to         <====
-#define STApw                "Navara@98"            // Target AP password        
+#define STApw                "changeme!"            // Target AP password        
 
 #define Start_WiFi                       // Start WiFi at startup, override startWiFi Pin
 
