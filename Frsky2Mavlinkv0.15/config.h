@@ -14,7 +14,8 @@ Complete change log and debugging options are at the bottom of this tab
  2020-04-08 v0.12 Serious bug uncovered by maciek252. ^ is in not the (raise to a power) operator in CPP, obviously. :(
  2020-04-12 v0.13 Experimental ALPHA code. Please report and help me fix bugs. Thanks. 
                   Remember, Passthrough is presently uni-directional - you can't ask for paramters from the GCS.
- 2020-06-01 v0.14 Accommodate Mavlink library updates                       
+ 2020-06-01 v0.14 Accommodate Mavlink library updates  
+ 2020-07-16 v0.15 Switch SPort to Serial2. Fixes repeat rebooting on Seril1 pins.                     
 */
 //===========================================================================================
 //
@@ -42,7 +43,7 @@ Complete change log and debugging options are at the bottom of this tab
 // Choose only one of these default GCS-side I/O channels
 // How does Mavlink telemetry leave this translator?
 
-#define GCS_Mavlink_IO  0    // Serial Port2     
+//#define GCS_Mavlink_IO  0    // Serial Port1     
 //#define GCS_Mavlink_IO  1    // BlueTooth Classic - ESP32 only
 #define GCS_Mavlink_IO  2    // WiFi - ESP32 or ESP8266 only - auto selects on ESP8266
 //#define GCS_Mavlink_IO  3    // WiFi AND Bluetooth simultaneously - ESP32 only
@@ -56,10 +57,10 @@ Complete change log and debugging options are at the bottom of this tab
 //                          S E L E C T   E S P   B O A R D   V A R I A N T   
 //=================================================================================================
 
-//#define ESP32_Variant     1    //  ESP32 Dev Module - Use Partition Scheme: "Minimal SPIFFS(1.9MB APP...)"
+#define ESP32_Variant     1    //  ESP32 Dev Module - Use Partition Scheme: "Minimal SPIFFS(1.9MB APP...)"
 //#define ESP32_Variant     2    //  Wemos® LOLIN ESP32-WROOM-32_OLED_Dual_26p
 //#define ESP32_Variant     3    //  Dragonlink V3 slim with internal ESP32 - contributed by Noircogi
-#define ESP32_Variant     4    //  Heltec Wifi Kit 32 - Use Partition Scheme: "Minimal SPIFFS(Large APPS ith OTA)" - contributed by Noircogi
+//#define ESP32_Variant     4    //  Heltec Wifi Kit 32 - Use Partition Scheme: "Minimal SPIFFS(Large APPS ith OTA)" - contributed by Noircogi
 
 #define ESP8266_Variant   1   // NodeMCU ESP 12F - choose "NodeMCU 1.0(ESP-12E)" board in the IDE
 //#define ESP8266_Variant   2   // ESP-12E, ESP-F barebones boards. RFD900X TX-MOD, QLRS et al - use Generic ESP8266 on IDE
@@ -115,7 +116,7 @@ bool daylightSaving = false;
 //                        E X P E R I M E N T A L    O P T I O N S  
 //    Don't change anything here unless you are confident you know the outcome
 
-#define ESP32_SoftwareSerial    // otherwise HardwareSerial is used 
+//#define ESP32_SoftwareSerial    // otherwise HardwareSerial is used 
 //#define ESP_Onewire             // enable half_duplex on single (tx) pin and wire 
 //#define ESP_Air_Relay_Blind_Inject_OK  // Blind inject instead of interleaving
 
@@ -282,11 +283,12 @@ bool daylightSaving = false;
   #if (ESP32_Variant == 2)          // Wemos® LOLIN ESP32-WROOM-32_OLED_Dual_26p
     #define FrsStatusLed  15        // No Onboard LED
     #define InvertFrsLed false     
-    #define BufStatusLed  99        // None    
-    #define GC_Mav_rxPin  25        // Mavlink to GCS
-    #define GC_Mav_txPin  26        // Mavlink from GCS
-    #define Fr_rxPin      12        // SPort - Not used in single wire mode
-    #define Fr_txPin      14        // SPort tx - Use me in single wire mode
+    #define BufStatusLed  99        // None   
+    #define Fr_rxPin      25        // SPort rx 
+    #define Fr_txPin      26        // SPort tx - Use me in single wire mode     
+    #define GC_Mav_rxPin  13        // Mavlink to GCS
+    #define GC_Mav_txPin  14        // Mavlink from GCS
+
     #if (defined SD_Support) || (defined OLED_Support)
       #define SDA           05        // I2C OLED board
       #define SCL           04        // I2C OLED board
@@ -321,9 +323,9 @@ bool daylightSaving = false;
     #define InvertFrsLed false     
     #define BufStatusLed  99 
     #define Fr_rxPin      27        // SPort rx 
-    #define Fr_txPin      13        // SPort tx - Use me in single wire mode 
+    #define Fr_txPin      17        // SPort tx - Use me in single wire mode 
     #define GC_Mav_rxPin  14        // Mavlink to GCS  - default UART2 is 16, but clashes with OLED_RESET
-    #define GC_Mav_txPin  17        // Mavlink from GCS 
+    #define GC_Mav_txPin  13        // Mavlink from GCS 
 
     
     #if !defined OLED_Support    // I2C OLED board is built into Heltec WiFi Kit 32
@@ -569,25 +571,25 @@ bool daylightSaving = false;
 //                                 S E R I A L
 //=================================================================================================
 
-#define mvBaudGCS           57600          // Default
+#define mvBaudGCS                57600          // Default
 
 #if (defined ESP32)  
-  #define Debug               Serial         // USB
+  #define Debug                  Serial         // USB
   
   #if defined ESP32_SoftwareSerial
     #include <SoftwareSerial.h>
-    SoftwareSerial frSerial; 
+    SoftwareSerial mvSerialGCSl; 
   #else     // default HW Serial
-    #define frSerial          Serial1     
+    #define mvSerialGCS          Serial1     
   #endif  
 
-  #define mvSerialGCS         Serial2       
+  #define frSerial               Serial2       
     
 #elif (defined ESP8266)
-  #define Debug               Serial1        //  D4   TXD1 debug out  - no RXD1 !
-  #define mvSerialGCS         Serial         //  RXD0 and TXD0
+  #define Debug                  Serial1        //  D4   TXD1 debug out  - no RXD1 !
+  #define frSerial               Serial         //  RXD0 and TXD0
   #include <SoftwareDebug.h>
-  SoftwareSerial frSerial;  
+  SoftwareSerial mvSerialGCS;  
 #endif 
 
 #if (defined TEENSY3X)      //  Teensy 3.1
@@ -608,7 +610,7 @@ bool daylightSaving = false;
 //=================================================================================================
 
 //#define Mav_Debug_All
-#define Frs_Debug_All
+//#define Frs_Debug_All
 //#define Frs_Debug_SPort
 //#define Frs_Debug_Payload
 //#define Frs_Debug_Period
