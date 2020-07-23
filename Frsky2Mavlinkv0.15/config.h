@@ -89,9 +89,9 @@ Complete change log and debugging options are at the bottom of this tab
 #define Start_WiFi                       // Start WiFi at startup, override startWiFi Pin
 
 // Choose one default mode for ESP only - AP means advertise as an access point (hotspot). STA means connect to a known host
-//#define WiFi_Mode   1  //AP            
+#define WiFi_Mode   1  //AP            
 //#define WiFi_Mode   2  // STA
-#define WiFi_Mode   3  // STA failover to AP
+//#define WiFi_Mode   3  // STA failover to AP
 
 // Choose one default protocol - for ESP32 only
 //#define WiFi_Protocol 1    // TCP/IP
@@ -258,11 +258,12 @@ bool daylightSaving = false;
   #if (ESP32_Variant == 1)          // ESP32 Dev Module
     #define FrsStatusLed  02        // Onboard LED
     #define InvertFrsLed false      
-    #define BufStatusLed  27        // untested pin      
+    #define BufStatusLed  27        // untested pin   
+    #define Fr_rxPin      13        // SPort rx
+    #define Fr_txPin      4         // SPort tx - Use me in single wire mode      
     #define GC_Mav_rxPin  16        // Mavlink to GCS
     #define GC_Mav_txPin  17        // Mavlink from GCS
-    #define Fr_rxPin      13        // SPort rx
-    #define Fr_txPin      4         // SPort tx - Use me in single wire mode
+
     #if (defined SD_Support) || (defined OLED_Support)   
       #define SDA           21        // I2C OLED board
       #define SCL           22        // I2C OLED board
